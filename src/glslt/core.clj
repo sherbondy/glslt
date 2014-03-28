@@ -24,10 +24,13 @@
 ;; need to handle preprocessor macros and comments in a reasonable way
 ;; maybe comments can be treated as whitespace...
 
+;; performance is a problem for multi-hundred line shaders (on the order of seconds...)
+
+(time
 (def example
   (numbers (slurp "samples/test1.vert")
          :start :TRANSLATION_UNIT
-         :total true))
+         :total true)))
 
 example
 
