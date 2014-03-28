@@ -21,6 +21,19 @@
 (def numbers
   (insta/parser (slurp "glsl-grammar.bnf")))
 
-(numbers (slurp "samples/test1.vert")
+(def example
+  (numbers (slurp "samples/test1.vert")
          :start :TRANSLATION_UNIT
-         :total true)
+         :total true))
+
+example
+
+(defn spans [t]
+  (if (sequential? t)
+    (cons (insta/span t) (map spans (next t)))
+    t))
+
+;; use insta/span to get [start-index end-index] for parse tree.
+(spans example)
+
+;; merge identifiers and numbers to get rid of baggage...
