@@ -29,6 +29,7 @@ Progress:
 [x] Initial Readme
 [ ] Parser
 [ ] Autocomplete
+- Manglsl is made of xml files and can be parsed automatically to generate inline docs/autocomplete
 [ ] Live preview
 [ ] ...
 
