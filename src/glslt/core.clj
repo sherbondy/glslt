@@ -21,6 +21,9 @@
 (def numbers
   (insta/parser (slurp "glsl-grammar.bnf")))
 
+;; need to handle preprocessor macros and comments in a reasonable way
+;; maybe comments can be treated as whitespace...
+
 (def example
   (numbers (slurp "samples/test1.vert")
          :start :TRANSLATION_UNIT
