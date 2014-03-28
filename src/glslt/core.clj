@@ -45,3 +45,15 @@ example
 (spans example)
 
 ;; merge identifiers and numbers to get rid of baggage...
+
+
+(defn ast-functions [ast result]
+  (if (sequential? ast)
+    (if (= (nth ast 0) :FUNCTION_HEADER)
+      (ast-functions (next ast)
+                     (conj result {:name (get-in ast [2 1])
+                                   :type (get-in ast [1 1 1 1 1 1])}))
+      (flatten (map #(ast-functions % result) (next ast))))
+    result))
+
+(ast-functions example [])
