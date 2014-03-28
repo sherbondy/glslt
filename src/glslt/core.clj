@@ -34,6 +34,8 @@
 
 example
 
+(insta/visualize example :output-file "example.png" :options {})
+
 (defn spans [t]
   (if (sequential? t)
     (cons (insta/span t) (map spans (next t)))
