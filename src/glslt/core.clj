@@ -25,6 +25,9 @@
 ;; maybe comments can be treated as whitespace...
 
 ;; performance is a problem for multi-hundred line shaders (on the order of seconds...)
+;; the shader chokes on small files with lots of compound expressions. Maybe we
+;; can drastically simplify the parsing of compound expressions, since this is not my primary interest
+;; in implementing the plugin...
 
 (time
 (def example
