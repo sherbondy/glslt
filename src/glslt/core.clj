@@ -60,3 +60,12 @@ example
     result))
 
 (ast-functions example [])
+
+;; Instaparse seems inadequate from a performance perspective,
+;; and it is painful to have to insert <whitespace> statements everywhere in the grammar.
+;; We really want an incremental parser, and it looks like we should, in fact,
+;; do lexing and parsing as separate phases. Essentially, the plugin should,
+;; unfortunately, follow the first few steps of the OpenGL ES shader compilation pipeline.
+;; Maybe, instead of fighting uphill and trying to reimplement all of this,
+;; reinventing the wheel, I should try and gut an actual GLSL compiler.
+;; Like, say, the one from Chrome... and then just spit out the AST in edn format...
