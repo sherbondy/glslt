@@ -14,7 +14,7 @@ In terms of functionality, this translates to:
 - Debugging functionality, e.g. stepping through the rendering pipeline on a per-vertex or per-pixel basis
 - C-Tags-esque support for viewing the overall structure of a GLSL program in terms of functions, structs, variables.
 - Fullscreen mode to display the live output of the program under the text.
-- Just for the hell of it: EyeToy integration.
+- Just for the hell of it: ShaderToy integration.
 
 For this to work, we need:
 
@@ -26,12 +26,11 @@ For this to work, we need:
 
 Progress:
 
-[x] Initial Readme
-[ ] Parser
-[ ] Autocomplete
-- Manglsl is made of xml files and can be parsed automatically to generate inline docs/autocomplete
-[ ] Live preview
-[ ] ...
+- [x] Initial Readme
+- [ ] Parser
+- [ ] Autocomplete: Manglsl is made of xml files and can be parsed automatically to generate inline docs/autocomplete
+- [ ] Live preview
+- [ ] ...
 
 Just for the hell of it, I am interested in using powerful/experimental libraries
 to achieve this, such as:
