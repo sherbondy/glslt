@@ -1,7 +1,7 @@
 # gestalt
 
 Gestalt is a GLSL plugin for Light Table.
-It initially targets the OpenGL ES GLSL Specification.
+It initially targets the [OpenGL ES Shading Language v1.00 Specification](http://www.khronos.org/registry/gles/specs/2.0/GLSL_ES_Specification_1.0.17.pdf) (same as WebGL's GLSL).
 The goal is for the program to be a good teacher.
 Essentially, someone should be able to learn GLSL by fiddling with a sample program through the guidance of the plugin.
 
@@ -41,13 +41,16 @@ to achieve this, such as:
 
 Inspiration:
 
-- OpenGL Shader Builder.app
-- OpenGL Profiler.app
-- PixelShaders.com
-- ShaderToy.com
+- [OpenGL Shader Builder.app](https://developer.apple.com/library/mac/documentation/graphicsimaging/conceptual/OpenGLShaderBuilderUserGuide/Introduction/Introduction.html)
+- [OpenGL Profiler.app](https://developer.apple.com/library/mac/documentation/graphicsimaging/conceptual/OpenGLProfilerUserGuide/Introduction/Introduction.html)
+- [PixelShaders.com](http://pixelshaders.com/)
+- [Shadertoy.com](shadertoy.com)
 
 Resources:
 
 - http://www.khronos.org/opengles/sdk/tools/Reference-Compiler/
 - Chromium...
 - http://www.mesa3d.org/shading.html
+- https://github.com/chrisdickinson/glsl-parser
+- http://www.opengl.org/sdk/tools/glslang/
+- [Mesa Standalone GLSL Compiler](http://www.mesa3d.org/shading.html#standalone)
