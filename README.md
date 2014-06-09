@@ -14,7 +14,7 @@ In terms of functionality, this translates to:
 - Debugging functionality, e.g. stepping through the rendering pipeline on a per-vertex or per-pixel basis
 - C-Tags-esque support for viewing the overall structure of a GLSL program in terms of functions, structs, variables.
 - Fullscreen mode to display the live output of the program under the text.
-- Just for the hell of it: Shadertoy integration.
+- Just for the hell of it: ShaderToy integration.
 
 For this to work, we need:
 
@@ -29,8 +29,7 @@ Progress:
 [x] Initial Readme
 [x] Syntax highlighting
 [ ] Parser
-[ ] Autocomplete
-- Manglsl is made of xml files and can be parsed automatically to generate inline docs/autocomplete
+[ ] Autocomplete: Manglsl is made of xml files and can be parsed automatically to generate inline docs/autocomplete
 [ ] Live preview
 [ ] ...
 
