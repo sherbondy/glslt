@@ -7,3 +7,6 @@ Autocomplete should:
 5. Provide completions in context, drawing from built-in vars/functions and those declared in the file.
 6. Characterize whether a function operates component-wise or falls into some other category.
 7. Link you to the full detailed description in an offline/online copy of manglsl.
+
+Instead of shipping the plugin with a copy of manglsl, it should bootstrap by downloading the latest revision
+of manglsl and converting it into a suitable format.
