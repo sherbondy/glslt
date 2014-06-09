@@ -1,0 +1,12 @@
+{:+
+ {:files [(:lt.objs.files/file-types
+           [{:name "Vertex Shader",
+             :exts [:vshader :vs :vsh :vert :glslv],
+             :mime "x-shader/x-vertex",
+             :tags [:editor.glsl :editor.vertex]}
+            {:name "Fragment Shader"
+             :exts [:fshader :fs :vsh :frag :glslf]
+             :mime "x-shader/x-fragment",
+             :tags [:editor.glsl :editor.fragment]}])]
+ }
+}
