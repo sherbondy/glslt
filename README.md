@@ -26,12 +26,12 @@ For this to work, we need:
 
 Progress:
 
-[x] Initial Readme
-[x] Syntax highlighting
-[ ] Parser
-[ ] Autocomplete: Manglsl is made of xml files and can be parsed automatically to generate inline docs/autocomplete
-[ ] Live preview
-[ ] ...
+- [x] Initial Readme
+- [x] Syntax highlighting
+- [ ] Parser
+- [ ] Autocomplete: Manglsl is made of xml files and can be parsed automatically to generate inline docs/autocomplete
+- [ ] Live preview
+- [ ] ...
 
 Just for the hell of it, I am interested in using powerful/experimental libraries
 to achieve this, such as:
