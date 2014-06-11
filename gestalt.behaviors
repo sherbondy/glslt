@@ -1,9 +1,9 @@
 {:+
  {:app [(:lt.objs.plugins/load-js ["gestalt_compiled.js"])]
 
-  :sidebar.docs.search [:lt.plugins.gestalt/glsl-doc-search]
+  :sidebar.docs.search [:lt.plugins.gestalt.core/glsl-doc-search]
 
-  :editor.glsl [:lt.plugins.gestalt/manglsl-browser-doc
+  :editor.glsl [:lt.plugins.gestalt.core/manglsl-browser-doc
                 [:lt.object/add-tag :docable]]
 
   :files [(:lt.objs.files/file-types

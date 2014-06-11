@@ -1,4 +1,4 @@
-(ns lt.plugins.gestalt
+(ns lt.plugins.gestalt.core
   (:require [lt.objs.notifos :as notifos]
             [lt.object :as object]
             [lt.objs.editor :as ed]
@@ -23,26 +23,7 @@
             [lt.util.load :as load])
   (:require-macros [lt.macros :refer [behavior]]))
 
-(def manglsl-root "https://cvs.khronos.org/svn/repos/ogles/trunk/sdk/docs/man3/")
-
-(def manglsl-html-root (str manglsl-root "html/"))
-
-;; (defn perform-xml-search [base-url query handler]
-;;   (let [xhr (goog.net.XhrIo.)]
-;;     (events/listen xhr "complete" (wrap-handler handler))
-;;     (.send xhr (str base-url (string/urlEncode query)))))
-
-;; (defn wrap-handler [handler]
-;;   (fn [event]
-;;     (let [response (.-target event)]
-;;       (if (.isSuccess response)
-;;           (handler response)
-;;           (notifos/done-working "Failed to connect to handler. Try again")))))
-
-(defn manglsl-page [token]
-  (str manglsl-html-root token ".xhtml"))
-
-(manglsl-page "asin")
+;; a lot of this is copied from / based on the haskell plugin
 
 (defn symbol-token? [s]
   (re-seq #"[\w\$_\-\.\*\+\/\?\><!]" s))
@@ -63,7 +44,7 @@
       (notifos/set-msg! "No docs found" {:class "error"})
       (object/raise editor :editor.doc.show! {:name token
                                               :ns "GLSL 1.00"
-                                              :doc (manglsl-page token)
+                                              :doc "this is where the docs would go"
                                               :loc loc}))))
 
 (behavior ::manglsl-browser-doc

@@ -9,4 +9,4 @@ Autocomplete should:
 7. Link you to the full detailed description in an offline/online copy of manglsl.
 
 Instead of shipping the plugin with a copy of manglsl, it should bootstrap by downloading the latest revision
-of manglsl and converting it into a suitable format.
+of manglsl and converting it into a suitable format one time. Then on startup, check for updates to the docs?
