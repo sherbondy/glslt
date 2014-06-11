@@ -16,14 +16,27 @@
             [lt.objs.tabs :as tabs]
             [lt.plugins.doc :as doc]
             [lt.objs.clients :as clients]
-            [goog.events :as events]
-            [goog.string :as string]
-            [clojure.string :as clj-string]
+            [clojure.string :as str]
             [lt.util.js :as util]
-            [lt.util.load :as load])
+            [lt.util.load :as load]
+            [cljs.reader :as reader])
   (:require-macros [lt.macros :refer [behavior]]))
 
 ;; a lot of this is copied from / based on the haskell plugin
+
+(def glsl-docs (atom {}))
+
+(defn update-docs! [err res]
+  (reset! glsl-docs
+          (reader/read-string res)))
+
+(defn grab-docs []
+  (.readFile load/fs
+             (str load/pwd "/plugins/gestalt/glsl-docs.edn")
+             "utf-8"
+             update-docs!))
+
+(grab-docs)
 
 (defn symbol-token? [s]
   (re-seq #"[\w\$_\-\.\*\+\/\?\><!]" s))
@@ -37,15 +50,24 @@
         (when (symbol-token? (:string token-left))
           (assoc token-left :loc loc)))))
 
+(defn param-description [param]
+  (str (:name param) ": " (:description param) "\n"))
+
 (defn manglsl-browser-doc [editor]
-  (let [loc   (ed/->cursor editor)
-        token (-> editor find-symbol-at-cursor :string)]
-    (if (nil? token)
+  (let [loc    (ed/->cursor editor)
+        token  (-> editor find-symbol-at-cursor :string)
+        docs   (get @glsl-docs token)
+        params (map :name (:params docs))]
+    (if (nil? docs)
       (notifos/set-msg! "No docs found" {:class "error"})
-      (object/raise editor :editor.doc.show! {:name token
-                                              :ns "GLSL 1.00"
-                                              :doc "this is where the docs would go"
-                                              :loc loc}))))
+      (object/raise editor :editor.doc.show!
+                    {:name (str token "("
+                                (apply str (interpose ", " params))
+                                ")")
+                     :ns "GLSL 1.00"
+                     :doc (str (:description docs) "\n\n"
+                               (apply str (map param-description (:params docs))))
+                     :loc loc}))))
 
 (behavior ::manglsl-browser-doc
           :triggers #{:editor.doc}
