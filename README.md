@@ -18,11 +18,11 @@ In terms of functionality, this translates to:
 
 For this to work, we need:
 
-- A GLSL parser, ideally an incremental one
+- A GLSL parser, ideally an incremental one: I may try something crazy and use the language-glsl haskell package. Could even attempt to compile it to js since it depends pretty much exclusively on pure haskell packages... (inspired by Elm lang...)
 - A file watcher
 - A pipeline for capturing/redirecting errors
 - A default WebGL context for rendering and plugging in new inputs
-- Nice tools like color pickers, matrix renderers...
+- Nice tools like color pickers, matrix renderers, input fields for uniform values (a la shader builder)...
 
 Progress:
 
@@ -54,3 +54,4 @@ Resources:
 - https://github.com/chrisdickinson/glsl-parser
 - http://www.opengl.org/sdk/tools/glslang/
 - [Mesa Standalone GLSL Compiler](http://www.mesa3d.org/shading.html#standalone)
+- [language-glsl haskell package](http://hackage.haskell.org/package/language-glsl)

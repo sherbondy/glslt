@@ -1,5 +1,12 @@
 {:+
- {:files [(:lt.objs.files/file-types
+ {:app [(:lt.objs.plugins/load-js ["gestalt_compiled.js"])]
+
+  :sidebar.docs.search [:lt.plugins.gestalt/glsl-doc-search]
+
+  :editor.glsl [:lt.plugins.gestalt/manglsl-browser-doc
+                [:lt.object/add-tag :docable]]
+
+  :files [(:lt.objs.files/file-types
            [{:name "Vertex Shader",
              :exts [:vshader :vs :vsh :vert :glslv],
              :mime "x-shader/x-vertex",
