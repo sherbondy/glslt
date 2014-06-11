@@ -28,7 +28,8 @@ Progress:
 
 - [x] Initial Readme
 - [x] Syntax highlighting
-- [ ] Parser
+- [x] Inline documentation
+- [ ] Parser (language-glsl or MESA?)
 - [ ] Autocomplete: Manglsl is made of xml files and can be parsed automatically to generate inline docs/autocomplete
 - [ ] Live preview
 - [ ] ...
