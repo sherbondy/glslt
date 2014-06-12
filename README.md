@@ -7,12 +7,12 @@ Essentially, someone should be able to learn GLSL by fiddling with a sample prog
 
 In terms of functionality, this translates to:
 
-- Powerful autocomplete for all built-in functions, with inline documentation
+- Powerful, context-aware autocomplete for all built-in (and programmer-defined) functions, with inline documentation
 - Live re-rendering of a shader as you modify it
 - inline, helpful errors for invalid shaders
 - Graphical tools for feeding input (e.g. images, webcam) and observing intermediate values/output of a shader
 - Debugging functionality, e.g. stepping through the rendering pipeline on a per-vertex or per-pixel basis
-- C-Tags-esque support for viewing the overall structure of a GLSL program in terms of functions, structs, variables.
+- Ctags-esque support for viewing the overall structure of a GLSL program in terms of functions, structs, variables.
 - Fullscreen mode to display the live output of the program under the text.
 - Just for the hell of it: ShaderToy integration.
 
@@ -28,11 +28,11 @@ Progress:
 
 - [x] Initial Readme
 - [x] Syntax highlighting
-- [x] Inline documentation
-- [ ] Parser (language-glsl or MESA?)
-- [ ] Autocomplete: Manglsl is made of xml files and can be parsed automatically to generate inline docs/autocomplete
+- [x] Inline documentation (grab from manglsl)
+- [ ] Parser (language-glsl -> GHC llvm-bytecode or MESA or write my own)
+- [ ] Autocomplete
 - [ ] Live preview
-- [ ] ...
+- [ ] GUI input tools...
 
 Just for the hell of it, I am interested in using powerful/experimental libraries
 to achieve this, such as:
