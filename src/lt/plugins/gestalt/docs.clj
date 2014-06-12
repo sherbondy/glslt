@@ -1,3 +1,6 @@
+;; I am being silly.
+;; Should probably just write a shell script to download the docs
+
 (ns lt.plugins.gestalt.docs
   (:use [clojure.java.shell :only [sh]]
         [clojure.pprint :only [pprint]])

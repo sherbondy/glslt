@@ -50,9 +50,12 @@
         (when (symbol-token? (:string token-left))
           (assoc token-left :loc loc)))))
 
+(def manglsl-root "http://www.khronos.org/opengles/sdk/docs/man3/html/")
+
 (defn param-description [param]
   (str (:name param) ": " (:description param) "\n"))
 
+;; I can use hiccup as a value in the doc map...
 (defn manglsl-browser-doc [editor]
   (let [loc    (ed/->cursor editor)
         token  (-> editor find-symbol-at-cursor :string)
@@ -64,7 +67,7 @@
                     {:name (str token "("
                                 (apply str (interpose ", " params))
                                 ")")
-                     :ns "GLSL 1.00"
+                     :ns [:a {:href (str manglsl-root token ".xhtml")} "GLSL Documentation"]
                      :doc (str (:description docs) "\n\n"
                                (apply str (map param-description (:params docs))))
                      :loc loc}))))
