@@ -24,6 +24,11 @@ For this to work, we need:
 - A default WebGL context for rendering and plugging in new inputs
 - Nice tools like color pickers, matrix renderers, input fields for uniform values (a la shader builder)...
 
+So, the initial goal is to obtain feature-parity with OpenGL Shader Builder.
+From here, we can start experimenting with goofy features that take full advantage of the fact that LT is essentially
+just a fancy web view (piping geometry/textures/shaders/params in and out from arbitrary sources online...
+dataflow programming sorts of ideas...)
+
 Progress:
 
 - [x] Initial Readme
@@ -56,3 +61,7 @@ Resources:
 - http://www.opengl.org/sdk/tools/glslang/
 - [Mesa Standalone GLSL Compiler](http://www.mesa3d.org/shading.html#standalone)
 - [language-glsl haskell package](http://hackage.haskell.org/package/language-glsl)
+
+
+My gratitude to the creators of [light-haskell](https://github.com/jetaggart/light-haskell) for giving
+me a sane starting-point for creating this plugin.
