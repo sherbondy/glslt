@@ -20,9 +20,11 @@ For this to work, we need:
 
 - A GLSL parser, ideally an incremental one: I may try something crazy and use the language-glsl haskell package. Could even attempt to compile it to js since it depends pretty much exclusively on pure haskell packages... (inspired by Elm lang...)
 - A file watcher
+- Or maybe it is sufficient to use WebGL's compiler and ask it about the shader (active_uniforms, active_attributes)?
 - A pipeline for capturing/redirecting errors
 - A default WebGL context for rendering and plugging in new inputs
 - Nice tools like color pickers, matrix renderers, input fields for uniform values (a la shader builder)...
+- Basic template files for a fragment and vertex shader (2d, 3d)?
 
 So, the initial goal is to obtain feature-parity with OpenGL Shader Builder.
 From here, we can start experimenting with goofy features that take full advantage of the fact that LT is essentially
