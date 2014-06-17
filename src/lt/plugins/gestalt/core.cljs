@@ -55,36 +55,49 @@
 (defn param-description [param]
   (str (:name param) ": " (:description param) "\n"))
 
+(defn get-doc-map [token]
+  (let[docs   (get @glsl-docs token)
+       params (map :name (:params docs))]
+    (when docs
+      {:name (str token "("
+                  (apply str (interpose ", " params))
+                  ")")
+       :ns [:a {:href (str manglsl-root token ".xhtml")} "GLSL Documentation"]
+       :doc (str (:description docs) "\n\n"
+                 (apply str (map param-description (:params docs))))})))
+
 ;; I can use hiccup as a value in the doc map...
 (defn manglsl-browser-doc [editor]
-  (let [loc    (ed/->cursor editor)
-        token  (-> editor find-symbol-at-cursor :string)
-        docs   (get @glsl-docs token)
-        params (map :name (:params docs))]
-    (if (nil? docs)
-      (notifos/set-msg! "No docs found" {:class "error"})
+  (let [loc     (ed/->cursor editor)
+        token   (-> editor find-symbol-at-cursor :string)
+        doc-map (get-doc-map token)]
+    (if doc-map
       (object/raise editor :editor.doc.show!
-                    {:name (str token "("
-                                (apply str (interpose ", " params))
-                                ")")
-                     :ns [:a {:href (str manglsl-root token ".xhtml")} "GLSL Documentation"]
-                     :doc (str (:description docs) "\n\n"
-                               (apply str (map param-description (:params docs))))
-                     :loc loc}))))
+                    (assoc doc-map :loc loc))
+      (notifos/set-msg! "No docs found" {:class "error"}))))
 
 (behavior ::manglsl-browser-doc
           :triggers #{:editor.doc}
           :reaction manglsl-browser-doc)
 
-(defn glsl-doc-exec [query]
-  (notifos/working (str "Grabbing doc: " query))
-  (util/wait 1000 #(notifos/done-working "Failed to connect to handler. Try again")))
+;; should probably search the description text too
+(defn doc-matches [query doc-keys]
+  (let [regex-query (js/RegExp. query "i")]
+    (filter identity
+      (for [doc-key doc-keys]
+        (when-not (empty? (re-find regex-query doc-key))
+          doc-key)))))
 
-;; how do I specify the client for searching the docs?
+(defn glsl-doc-exec [query]
+  (let [doc-keys (keys @glsl-docs)
+        matches  (doc-matches query doc-keys)]
+    (object/raise doc/doc-search :doc.search.results
+                  (map get-doc-map maches))))
 
 ;; (notifos/working "hello")
 (defn glsl-doc-search [this cur]
-  (conj cur {:label "glsl" :trigger glsl-doc-exec
+  (conj cur {:label "glsl"
+             :trigger glsl-doc-exec
              :file-types #{"Vertex Shader" "Fragment Shader"}}))
 
 (behavior ::glsl-doc-search
