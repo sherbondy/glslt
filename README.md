@@ -4,10 +4,11 @@ Gestalt is a GLSL plugin for Light Table.
 It initially targets the [OpenGL ES Shading Language v1.00 Specification](http://www.khronos.org/registry/gles/specs/2.0/GLSL_ES_Specification_1.0.17.pdf) (same as WebGL's GLSL).
 The goal is for the program to be a good teacher.
 Essentially, someone should be able to learn GLSL by fiddling with a sample program through the guidance of the plugin.
+I am guided by the philosophy that our tools should explain themselves and get out of the way.
 
 In terms of functionality, this translates to:
 
-- Powerful, context-aware autocomplete for all built-in (and programmer-defined) functions, with inline documentation
+- Powerful, type/context-aware autocomplete for all built-in (and programmer-defined) functions, with inline documentation
 - Live re-rendering of a shader as you modify it
 - inline, helpful errors for invalid shaders
 - Graphical tools for feeding input (e.g. images, webcam) and observing intermediate values/output of a shader
@@ -18,13 +19,14 @@ In terms of functionality, this translates to:
 
 For this to work, we need:
 
-- A GLSL parser, ideally an incremental one: I may try something crazy and use the language-glsl haskell package. Could even attempt to compile it to js since it depends pretty much exclusively on pure haskell packages... (inspired by Elm lang...)
+- A GLSL parser, ideally an incremental one: for now the plan is to use MESA's glsl parser, compiled to js with emscripten.
 - A file watcher
 - Or maybe it is sufficient to use WebGL's compiler and ask it about the shader (active_uniforms, active_attributes)?
 - A pipeline for capturing/redirecting errors
 - A default WebGL context for rendering and plugging in new inputs
-- Nice tools like color pickers, matrix renderers, input fields for uniform values (a la shader builder)...
+- Nice tools like color pickers, matrix renderers, input fields for uniform values (a la shader builder: pictures, video, audio, webcam as texture inputs)...
 - Basic template files for a fragment and vertex shader (2d, 3d)?
+- Display graphical information about your hardware WebGL limitations (max textures, resolution requirements, etc.)
 
 So, the initial goal is to obtain feature-parity with OpenGL Shader Builder.
 From here, we can start experimenting with goofy features that take full advantage of the fact that LT is essentially
@@ -36,7 +38,7 @@ Progress:
 - [x] Initial Readme
 - [x] Syntax highlighting
 - [x] Inline documentation (grab from manglsl)
-- [ ] Parser (language-glsl -> GHC llvm-bytecode or MESA or write my own)
+- [ ] Parser: MESA glsl, piggybacking off [GLSL optimizer](https://github.com/aras-p/glsl-optimizer) -> emscripten
 - [ ] Autocomplete
 - [ ] Live preview
 - [ ] GUI input tools...
