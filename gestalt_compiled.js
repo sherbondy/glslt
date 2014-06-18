@@ -88,18 +88,19 @@ lt.plugins.gestalt.core.compiled_vert_shaders = cljs.core.atom.call(null,cljs.co
 lt.plugins.gestalt.core.compile_shader_type = (function compile_shader_type(fname,source,shader_type){var shader = lt.plugins.gestalt.core.gl.createShader(shader_type);lt.plugins.gestalt.core.gl.shaderSource(shader,source);
 lt.plugins.gestalt.core.gl.compileShader(shader);
 if(cljs.core.truth_(lt.plugins.gestalt.core.gl.getShaderParameter(shader,lt.plugins.gestalt.core.gl.COMPILE_STATUS)))
-{return cljs.core.swap_BANG_.call(null,(function (){var pred__8059 = cljs.core._EQ_;var expr__8060 = shader_type;if(cljs.core.truth_(pred__8059.call(null,lt.plugins.gestalt.core.gl.FRAGMENT_SHADER,expr__8060)))
+{cljs.core.swap_BANG_.call(null,(function (){var pred__8209 = cljs.core._EQ_;var expr__8210 = shader_type;if(cljs.core.truth_(pred__8209.call(null,lt.plugins.gestalt.core.gl.FRAGMENT_SHADER,expr__8210)))
 {return lt.plugins.gestalt.core.compiled_frag_shaders;
 } else
-{if(cljs.core.truth_(pred__8059.call(null,lt.plugins.gestalt.core.gl.VERTEX_SHADER,expr__8060)))
+{if(cljs.core.truth_(pred__8209.call(null,lt.plugins.gestalt.core.gl.VERTEX_SHADER,expr__8210)))
 {return lt.plugins.gestalt.core.compiled_vert_shaders;
 } else
-{throw (new Error(("No matching clause: "+cljs.core.str.cljs$core$IFn$_invoke$arity$1(expr__8060))));
+{throw (new Error(("No matching clause: "+cljs.core.str.cljs$core$IFn$_invoke$arity$1(expr__8210))));
 }
 }
 })(),cljs.core.assoc,fname,shader);
+return lt.objs.notifos.set_msg_BANG_.call(null,"Successfully compiled shader");
 } else
-{return new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"errors","errors",4014236381),lt.plugins.gestalt.core.gl_errors__GT_edn.call(null,lt.plugins.gestalt.core.gl.getShaderInfoLog(shader))], null);
+{var errors = lt.plugins.gestalt.core.gl_errors__GT_edn.call(null,lt.plugins.gestalt.core.gl.getShaderInfoLog(shader));return lt.objs.notifos.set_msg_BANG_.call(null,"Ran into some errors",new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",1108647146),"error"], null));
 }
 });
 lt.plugins.gestalt.core.shader_mapping = new cljs.core.PersistentArrayMap(null, 2, ["x-shader/x-fragment",lt.plugins.gestalt.core.gl.FRAGMENT_SHADER,"x-shader/x-vertex",lt.plugins.gestalt.core.gl.VERTEX_SHADER], null);
@@ -109,11 +110,10 @@ lt.plugins.gestalt.core.compile_shader = (function compile_shader(fname){var tem
 {return null;
 }
 });
-lt.plugins.gestalt.core.compile_shader.call(null,"/Users/ethanis/Code/glslt/samples/test1.vert");
-lt.plugins.gestalt.core.compile_shader_buffer = (function compile_shader_buffer(){var fname = lt.plugins.gestalt.core.current_file_name.call(null);var mime = new cljs.core.Keyword(null,"mime","mime",1017255846).cljs$core$IFn$_invoke$arity$1(lt.objs.files.path__GT_type.call(null,fname));var temp__4126__auto__ = cljs.core.get.call(null,lt.plugins.gestalt.core.shader_mapping,mime);if(cljs.core.truth_(temp__4126__auto__))
-{var shader_type = temp__4126__auto__;return lt.plugins.gestalt.core.compile_shader_type.call(null,fname,lt.plugins.gestalt.core.current_buffer_content.call(null),shader_type);
+lt.plugins.gestalt.core.compile_shader_buffer = (function compile_shader_buffer(){var fname = lt.plugins.gestalt.core.current_file_name.call(null);var mime = new cljs.core.Keyword(null,"mime","mime",1017255846).cljs$core$IFn$_invoke$arity$1(lt.objs.files.path__GT_type.call(null,fname));var temp__4124__auto__ = cljs.core.get.call(null,lt.plugins.gestalt.core.shader_mapping,mime);if(cljs.core.truth_(temp__4124__auto__))
+{var shader_type = temp__4124__auto__;return lt.plugins.gestalt.core.compile_shader_type.call(null,fname,lt.plugins.gestalt.core.current_buffer_content.call(null),shader_type);
 } else
-{return null;
+{return lt.objs.notifos.set_msg_BANG_.call(null,"This file is not a valid shader",new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"class","class",1108647146),"error"], null));
 }
 });
 lt.plugins.gestalt.core.current_file_name.call(null);
@@ -122,16 +122,16 @@ lt.plugins.gestalt.core.current_buffer_content = (function current_buffer_conten
 lt.plugins.gestalt.core.current_file_name = (function current_file_name(){return new cljs.core.Keyword(null,"path","path",1017337751).cljs$core$IFn$_invoke$arity$1(new cljs.core.Keyword(null,"info","info",1017141280).cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null,lt.objs.editor.pool.last_active.call(null))));
 });
 lt.plugins.gestalt.core.doc_matches = (function doc_matches(query,doc_keys){var regex_query = (new RegExp(query,"i"));return cljs.core.filter.call(null,cljs.core.identity,(function (){var iter__7151__auto__ = ((function (regex_query){
-return (function iter__8066(s__8067){return (new cljs.core.LazySeq(null,((function (regex_query){
-return (function (){var s__8067__$1 = s__8067;while(true){
-var temp__4126__auto__ = cljs.core.seq.call(null,s__8067__$1);if(temp__4126__auto__)
-{var s__8067__$2 = temp__4126__auto__;if(cljs.core.chunked_seq_QMARK_.call(null,s__8067__$2))
-{var c__7149__auto__ = cljs.core.chunk_first.call(null,s__8067__$2);var size__7150__auto__ = cljs.core.count.call(null,c__7149__auto__);var b__8069 = cljs.core.chunk_buffer.call(null,size__7150__auto__);if((function (){var i__8068 = 0;while(true){
-if((i__8068 < size__7150__auto__))
-{var doc_key = cljs.core._nth.call(null,c__7149__auto__,i__8068);cljs.core.chunk_append.call(null,b__8069,((cljs.core.empty_QMARK_.call(null,cljs.core.re_find.call(null,regex_query,doc_key)))?null:doc_key));
+return (function iter__8216(s__8217){return (new cljs.core.LazySeq(null,((function (regex_query){
+return (function (){var s__8217__$1 = s__8217;while(true){
+var temp__4126__auto__ = cljs.core.seq.call(null,s__8217__$1);if(temp__4126__auto__)
+{var s__8217__$2 = temp__4126__auto__;if(cljs.core.chunked_seq_QMARK_.call(null,s__8217__$2))
+{var c__7149__auto__ = cljs.core.chunk_first.call(null,s__8217__$2);var size__7150__auto__ = cljs.core.count.call(null,c__7149__auto__);var b__8219 = cljs.core.chunk_buffer.call(null,size__7150__auto__);if((function (){var i__8218 = 0;while(true){
+if((i__8218 < size__7150__auto__))
+{var doc_key = cljs.core._nth.call(null,c__7149__auto__,i__8218);cljs.core.chunk_append.call(null,b__8219,((cljs.core.empty_QMARK_.call(null,cljs.core.re_find.call(null,regex_query,doc_key)))?null:doc_key));
 {
-var G__8070 = (i__8068 + 1);
-i__8068 = G__8070;
+var G__8220 = (i__8218 + 1);
+i__8218 = G__8220;
 continue;
 }
 } else
@@ -140,12 +140,12 @@ continue;
 break;
 }
 })())
-{return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__8069),iter__8066.call(null,cljs.core.chunk_rest.call(null,s__8067__$2)));
+{return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__8219),iter__8216.call(null,cljs.core.chunk_rest.call(null,s__8217__$2)));
 } else
-{return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__8069),null);
+{return cljs.core.chunk_cons.call(null,cljs.core.chunk.call(null,b__8219),null);
 }
 } else
-{var doc_key = cljs.core.first.call(null,s__8067__$2);return cljs.core.cons.call(null,((cljs.core.empty_QMARK_.call(null,cljs.core.re_find.call(null,regex_query,doc_key)))?null:doc_key),iter__8066.call(null,cljs.core.rest.call(null,s__8067__$2)));
+{var doc_key = cljs.core.first.call(null,s__8217__$2);return cljs.core.cons.call(null,((cljs.core.empty_QMARK_.call(null,cljs.core.re_find.call(null,regex_query,doc_key)))?null:doc_key),iter__8216.call(null,cljs.core.rest.call(null,s__8217__$2)));
 }
 } else
 {return null;
@@ -163,6 +163,8 @@ lt.plugins.gestalt.core.glsl_doc_exec = (function glsl_doc_exec(query){var doc_k
 lt.plugins.gestalt.core.glsl_doc_search = (function glsl_doc_search(this$,cur){return cljs.core.conj.call(null,cur,new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"label","label",1116631654),"glsl",new cljs.core.Keyword(null,"trigger","trigger",4248979754),lt.plugins.gestalt.core.glsl_doc_exec,new cljs.core.Keyword(null,"file-types","file-types",1727875162),new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 2, ["Fragment Shader",null,"Vertex Shader",null], null), null)], null));
 });
 lt.object.behavior_STAR_.call(null,new cljs.core.Keyword("lt.plugins.gestalt.core","glsl-doc-search","lt.plugins.gestalt.core/glsl-doc-search",1175882494),new cljs.core.Keyword(null,"triggers","triggers",2516997421),new cljs.core.PersistentHashSet(null, new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"types+","types+",4450069060),null], null), null),new cljs.core.Keyword(null,"reaction","reaction",4441361819),lt.plugins.gestalt.core.glsl_doc_search);
+lt.objs.command.command.call(null,new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"command","command",1964298941),new cljs.core.Keyword(null,"compile-shader","compile-shader",1009200177),new cljs.core.Keyword(null,"desc","desc",1016984067),"GLSL: Compile shader",new cljs.core.Keyword(null,"exec","exec",1017031683),(function (){return lt.plugins.gestalt.core.compile_shader_buffer.call(null);
+})], null));
 }
 
 //# sourceMappingURL=gestalt_compiled.js.map

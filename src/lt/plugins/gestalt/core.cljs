@@ -105,12 +105,16 @@
     (.shaderSource gl shader source)
     (.compileShader gl shader)
     (if (.getShaderParameter gl shader gl.COMPILE_STATUS)
-      (swap!
-        (condp = shader-type
-          gl.FRAGMENT_SHADER compiled-frag-shaders
-          gl.VERTEX_SHADER   compiled-vert-shaders)
-         assoc fname shader)
-      {:errors (gl-errors->edn (.getShaderInfoLog gl shader))})))
+      (do
+        (swap!
+          (condp = shader-type
+            gl.FRAGMENT_SHADER compiled-frag-shaders
+            gl.VERTEX_SHADER   compiled-vert-shaders)
+           assoc fname shader)
+        (notifos/set-msg! "Successfully compiled shader"))
+
+      (let [errors (gl-errors->edn (.getShaderInfoLog gl shader))]
+        (notifos/set-msg! "Ran into some errors" {:class "error"})))))
 
 (def shader-mapping
   {"x-shader/x-fragment" gl.FRAGMENT_SHADER
@@ -124,17 +128,18 @@
      (:content file)
      (get shader-mapping (:type file)))))
 
-(compile-shader "/Users/ethanis/Code/glslt/samples/test1.vert")
+;; (compile-shader "/Users/ethanis/Code/glslt/samples/test1.vert")
 
 (defn compile-shader-buffer []
   "compile current buffer as shader"
   (let [fname (current-file-name)
         mime  (:mime (files/path->type fname))]
-    (when-let [shader-type (get shader-mapping mime)]
+    (if-let [shader-type (get shader-mapping mime)]
       (compile-shader-type
        fname
        (current-buffer-content)
-       shader-type))))
+       shader-type)
+      (notifos/set-msg! "This file is not a valid shader" {:class "error"}))))
 
 (current-file-name)
 
@@ -175,3 +180,7 @@
 (behavior ::glsl-doc-search
           :triggers #{:types+}
           :reaction glsl-doc-search)
+
+(cmd/command {:command :compile-shader
+              :desc "GLSL: Compile shader"
+              :exec #(compile-shader-buffer)})
