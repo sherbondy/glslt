@@ -99,14 +99,18 @@
 (def compiled-frag-shaders (atom {}))
 (def compiled-vert-shaders (atom {}))
 
+;; probably need to delete old shader on recompile
 (defn compile-shader-type [fname source shader-type]
-  (let [shader   (.createShader gl shader-type)]
+  (let [shader (.createShader gl shader-type)]
     (.shaderSource gl shader source)
     (.compileShader gl shader)
     (if (.getShaderParameter gl shader gl.COMPILE_STATUS)
-      {:attribs "bla" :uniforms "bla"}
-      {:errors (gl-errors->edn (.getShaderInfoLog gl shader))}
-      )))
+      (swap!
+        (condp = shader-type
+          gl.FRAGMENT_SHADER compiled-frag-shaders
+          gl.VERTEX_SHADER   compiled-vert-shaders)
+         assoc fname shader)
+      {:errors (gl-errors->edn (.getShaderInfoLog gl shader))})))
 
 (def shader-mapping
   {"x-shader/x-fragment" gl.FRAGMENT_SHADER
@@ -120,13 +124,19 @@
      (:content file)
      (get shader-mapping (:type file)))))
 
+(compile-shader "/Users/ethanis/Code/glslt/samples/test1.vert")
+
 (defn compile-shader-buffer []
   "compile current buffer as shader"
-  (when-let [shader-type (get shader-mapping (:mime (current-file-name)))]
-    (compile-shader-type
-     (current-file-name)
-     (current-buffer-content)
-     shader-type)))
+  (let [fname (current-file-name)
+        mime  (:mime (files/path->type fname))]
+    (when-let [shader-type (get shader-mapping mime)]
+      (compile-shader-type
+       fname
+       (current-buffer-content)
+       shader-type))))
+
+(current-file-name)
 
 (defn current-buffer-content []
   "Returns content of the current buffer"
@@ -156,6 +166,7 @@
                   (map get-doc-map maches))))
 
 ;; (notifos/working "hello")
+
 (defn glsl-doc-search [this cur]
   (conj cur {:label "glsl"
              :trigger glsl-doc-exec
