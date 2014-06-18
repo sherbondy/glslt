@@ -1,6 +1,10 @@
 // Created by inigo quilez - iq/2014
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 
+#ifdef GL_ES
+precision highp float;
+#endif
+
 // { 2d cell id, distance to border, distnace to center )
 vec4 hexagon( vec2 p )
 {

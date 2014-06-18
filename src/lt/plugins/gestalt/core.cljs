@@ -26,15 +26,14 @@
 
 (def glsl-docs (atom {}))
 
-(defn update-docs! [err res]
+(defn update-docs! [res]
   (reset! glsl-docs
-          (reader/read-string res)))
+          (reader/read-string (:content res))))
 
 (defn grab-docs []
-  (.readFile load/fs
-             (str load/pwd "/plugins/gestalt/glsl-docs.edn")
-             "utf-8"
-             update-docs!))
+  (files/open
+   (str load/pwd "/plugins/gestalt/glsl-docs.edn")
+   update-docs!))
 
 (grab-docs)
 
@@ -79,6 +78,68 @@
 (behavior ::manglsl-browser-doc
           :triggers #{:editor.doc}
           :reaction manglsl-browser-doc)
+
+(def canvas (.createElement js/document "CANVAS"))
+(def gl (.getContext canvas "webgl"))
+
+(defn error->map [error]
+  (let [parts (str/split error #":")]
+    {:line (nth parts 2)
+     :operator (-> (nth parts 3)
+                   str/trim
+                   (str/replace #"\'" ""))
+     :message (str/trim (nth parts 4))}))
+
+(defn gl-errors->edn [error-str]
+  (let [errors (str/split-lines error-str)]
+    (vec (map error->map errors))))
+
+
+;; maintain two maps of filename -> compiled shader objects
+(def compiled-frag-shaders (atom {}))
+(def compiled-vert-shaders (atom {}))
+
+(defn compile-shader-type [fname source shader-type]
+  (let [shader   (.createShader gl shader-type)]
+    (.shaderSource gl shader source)
+    (.compileShader gl shader)
+    (if (.getShaderParameter gl shader gl.COMPILE_STATUS)
+      {:attribs "bla" :uniforms "bla"}
+      {:errors (gl-errors->edn (.getShaderInfoLog gl shader))}
+      )))
+
+(def shader-mapping
+  {"x-shader/x-fragment" gl.FRAGMENT_SHADER
+   "x-shader/x-vertex" gl.VERTEX_SHADER})
+
+(defn compile-shader [fname]
+  "compile given file path as shader"
+  (when-let [file (files/open-sync fname)]
+    (compile-shader-type
+     fname
+     (:content file)
+     (get shader-mapping (:type file)))))
+
+(defn compile-shader-buffer []
+  "compile current buffer as shader"
+  (when-let [shader-type (get shader-mapping (:mime (current-file-name)))]
+    (compile-shader-type
+     (current-file-name)
+     (current-buffer-content)
+     shader-type)))
+
+(defn current-buffer-content []
+  "Returns content of the current buffer"
+  (let [cm (ed/->cm-ed (pool/last-active))]
+    (.getRange cm
+               #js {:line 0 :ch 0}
+               #js {:line (.lineCount (ed/->cm-ed (pool/last-active))) :ch 0})))
+
+(defn current-file-name []
+  (-> @(pool/last-active) :info :path))
+
+;; (files/path->type (current-file-name))
+;; (files/basename (current-file-name))
 
 ;; should probably search the description text too
 (defn doc-matches [query doc-keys]
