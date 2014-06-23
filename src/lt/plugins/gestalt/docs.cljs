@@ -28,8 +28,11 @@
 (defn param-description [param]
   (str (:name param) ": " (:description param) "\n"))
 
+(defn get-docs []
+  (state/get-state state/docs-path))
+
 (defn get-doc-map [token]
-  (let [docs   (get (state/get-state state/docs-path) token)
+  (let [docs   (get (get-docs) token)
         params (map :name (:params docs))]
     (when docs
       {:name (str token "("
@@ -58,10 +61,11 @@
           doc-key)))))
 
 (defn glsl-doc-exec [query]
-  (let [doc-keys (keys @glsl-docs)
-        matches  (doc-matches query doc-keys)]
+  (let [doc-keys (keys (get-docs))
+        matches  (doc-matches query doc-keys)
+        doc-maps (map get-doc-map matches)]
     (object/raise doc/doc-search :doc.search.results
-                  (map get-doc-map maches))))
+                  doc-maps)))
 
 (defn glsl-doc-search [this cur]
   (conj cur {:label "glsl"
