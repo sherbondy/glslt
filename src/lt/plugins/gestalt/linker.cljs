@@ -2,7 +2,9 @@
 ;; links together a vertex shader and a fragment shader
 
 (ns lt.plugins.gestalt.linker
-  (:require [lt.object :as object]
+  (:require [lt.plugins.gestalt.state :as gstate]
+            [lt.object :as object]
+            [lt.objs.command :as cmd]
             [lt.objs.tabs :as tabs]
             [lt.objs.statusbar :as statusbar]
             [lt.objs.notifos :as notifos]
@@ -11,20 +13,46 @@
             [om.dom :as dom :include-macros true])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
+;; maybe everything that has a dom function in it
+;; must be a bona fide component for updates to propagate?
+
+;; date => the global state from state.cljs
 (defn file-list [data owner]
   (reify
     om/IRender
     (render [this]
-      (dom/h1 nil (:text data)))))
+     (dom/div
+      nil
+      (dom/h1 nil (or (get data :text)
+                      "No value for text"))
+      (dom/h1 nil "Pick a Vertex Shader:")
+      (om/build shader-list (get data :vertex-shaders))
+      (dom/h1 nil "Pick a Fragment Shader:")
+      (om/build shader-list (get data :fragment-shaders))))))
+
+(defn shader-elem [[fname _] owner]
+  (reify
+    om/IRender
+    (render [_]
+      (dom/li nil fname))))
+
+(defn shader-list [shaders owner]
+  (reify
+    om/IRender
+    (render [this]
+      (apply dom/ul nil
+        (om/build-all shader-elem shaders)))))
 
 (defui glsl-linker [this]
-  "dummy function: the real action is in build-linker-ui"
-  [:div#glsl-linker])
+  ;; dummy function: the real action is in build-linker-ui
+  [:div.glsl-linker])
 
-;; can set (:content this) as the target.
+;; can set (:content @this) as the target.
 (defn build-linker-ui [this]
-  (om/root file-list {:text "Hello world!"}
-           {:target (:content @this)}))
+  (om/root
+   file-list
+   gstate/global-state
+   {:target (:content @this)}))
 
 ;; I feel like this should be a default method in light table:
 ;; it is very common: destroy tabset if empty, otherwise just destroy tab.
@@ -53,4 +81,7 @@
     (tabs/add! linker-obj)
     (tabs/active! linker-obj)))
 
-(create-linker)
+
+(cmd/command {:command :link-shaders
+              :desc "GLSL: Open shader linker view"
+              :exec create-linker})

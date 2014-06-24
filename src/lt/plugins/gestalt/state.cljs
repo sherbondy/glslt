@@ -5,8 +5,11 @@
 (def global-state
   (atom
    {:docs {}
+    :vertex-shaders {}
     :fragment-shaders {}
-    :vertex-shaders {}}))
+    :current-vertex ""
+    :current-fragment ""
+    :text "WHEE"}))
 
 ;; these are for getting views into the global state
 (def docs-path [:docs])

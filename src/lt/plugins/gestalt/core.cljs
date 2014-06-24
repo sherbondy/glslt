@@ -1,7 +1,7 @@
 (ns lt.plugins.gestalt.core
   (:require [lt.plugins.gestalt.linker :as glinker]
             [lt.plugins.gestalt.util :as gutil]
-            [lt.plugins.gestalt.state :as state]
+            [lt.plugins.gestalt.state :as gstate]
             [lt.objs.notifos :as notifos]
             [lt.objs.command :as cmd]
             [lt.objs.files :as files]
@@ -26,17 +26,17 @@
   (let [errors (str/split-lines error-str)]
     (vec (map error->map errors))))
 
-;; probably need to delete old shader on recompile
+;; probably need to delete old shader for a file on recompile
 (defn compile-shader-type [fname source shader-type]
   (let [shader (.createShader gl shader-type)]
     (.shaderSource gl shader source)
     (.compileShader gl shader)
     (if (.getShaderParameter gl shader gl.COMPILE_STATUS)
       (do
-        ((swap-state-fn
+        ((gstate/swap-state-fn
           (condp = shader-type
-            gl.FRAGMENT_SHADER state/frag-path
-            gl.VERTEX_SHADER   state/vert-path))
+            gl.FRAGMENT_SHADER gstate/frag-path
+            gl.VERTEX_SHADER   gstate/vert-path))
            assoc fname shader)
         (notifos/set-msg! "Successfully compiled shader"))
 
@@ -65,7 +65,7 @@
     (if-let [shader-type (get shader-mapping mime)]
       (compile-shader-type
        fname
-       (current-buffer-content)
+       (gutil/current-buffer-content)
        shader-type)
       (notifos/set-msg! "This file is not a valid shader"
                         {:class "error"}))))
@@ -76,7 +76,7 @@
 
 (cmd/command {:command :compile-shader
               :desc "GLSL: Compile shader"
-              :exec #(compile-shader-buffer)})
+              :exec compile-shader-buffer})
 
 (cmd/command {:command :create-program
               :desc "GLSL: Create program"
