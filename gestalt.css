@@ -1,0 +1,8 @@
+.glsl-error {
+  background-color: #aa0000 !important;
+  color: #ffffff !important;
+}
+
+.glsl-error * {
+  color: inherit !important;
+}

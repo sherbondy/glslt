@@ -2,6 +2,9 @@
   (:require [lt.plugins.gestalt.linker :as glinker]
             [lt.plugins.gestalt.util :as gutil]
             [lt.plugins.gestalt.state :as gstate]
+            [lt.objs.console :as console]
+            [lt.objs.editor :as ed]
+            [lt.objs.editor.pool :as pool]
             [lt.objs.notifos :as notifos]
             [lt.objs.command :as cmd]
             [lt.objs.files :as files]
@@ -15,20 +18,38 @@
 (def gl (.getContext canvas "webgl"))
 
 (defn error->map [error]
-  (let [parts (str/split error #":")]
-    {:line (nth parts 2)
+  (let [parts (str/split error #":")
+        line  (js/parseInt (nth parts 2) 10)]
+    {:line     (if (js/isNaN line) 0 (dec line))
      :operator (-> (nth parts 3)
                    str/trim
                    (str/replace #"\'" ""))
-     :message (str/trim (nth parts 4))}))
+     :message  (str/trim (nth parts 4))}))
 
 (defn gl-errors->edn [error-str]
   (let [errors (str/split-lines error-str)]
     (vec (map error->map errors))))
 
+(defn current-editor []
+  (ed/->cm-ed (pool/last-active)))
+
+;; handle adding/removing inline errors
+(add-watch gstate/global-state :line-errors
+           (fn [k r o n]
+             (let [error-path [:errors (gutil/current-file-name)]
+                   old-errors (get-in o error-path)
+                   new-errors (get-in n error-path)
+                   editor     (current-editor)]
+               (when (not= old-errors new-errors)
+                 (doseq [error old-errors]
+                   (ed/-line-class editor (:line error) "wrap" "glsl-error"))
+                 (doseq [error new-errors]
+                   (ed/+line-class editor (:line error) "wrap" "glsl-error"))))))
+
 ;; probably need to delete old shader for a file on recompile
 (defn compile-shader-type [fname source shader-type]
-  (let [shader (.createShader gl shader-type)]
+  (let [shader (.createShader gl shader-type)
+        error-state-fn (gstate/swap-state-fn gstate/error-path)]
     (.shaderSource gl shader source)
     (.compileShader gl shader)
     (if (.getShaderParameter gl shader gl.COMPILE_STATUS)
@@ -38,9 +59,18 @@
             gl.FRAGMENT_SHADER gstate/frag-path
             gl.VERTEX_SHADER   gstate/vert-path))
            assoc fname shader)
+        (error-state-fn assoc fname [])
         (notifos/set-msg! "Successfully compiled shader"))
 
+      ;; handle adding new inline errors
       (let [errors (gl-errors->edn (.getShaderInfoLog gl shader))]
+        (doseq [error errors]
+          (console/log (str "Error on line "
+                            (inc (:line error)) ": "
+                            (:operator error) ": "
+                            (:message error))
+                       "error"))
+        (error-state-fn assoc fname errors)
         (notifos/set-msg! "Ran into some errors"
                           {:class "error"})))))
 

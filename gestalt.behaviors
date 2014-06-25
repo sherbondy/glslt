@@ -1,6 +1,7 @@
 {:+
  {:app [(:lt.objs.plugins/load-js ["react/react.min.js"
-                                   "gestalt_compiled.js"])]
+                                   "gestalt_compiled.js"])
+        (:lt.objs.plugins/load-css "gestalt.css")]
 
   :sidebar.docs.search [:lt.plugins.gestalt.docs/glsl-doc-search]
 

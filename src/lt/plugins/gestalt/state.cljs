@@ -5,16 +5,18 @@
 (def global-state
   (atom
    {:docs {}
-    :vertex-shaders {}
+    :vertex-shaders {} ;; key = absolute filename, value = compiled shader js obj
     :fragment-shaders {}
-    :current-vertex ""
+    :current-vertex "" ;; key = abs filename
     :current-fragment ""
+    :errors {} ;; key = abs filename, value = vector of errors (see core.cljs error->map)
     :text "WHEE"}))
 
 ;; these are for getting views into the global state
 (def docs-path [:docs])
 (def frag-path [:fragment-shaders])
 (def vert-path [:vertex-shaders])
+(def error-path [:errors])
 
 ;; poor mind's lenses?
 
