@@ -47,19 +47,28 @@
                  (doseq [error new-errors]
                    (ed/+line-class editor (:line error) "wrap" "glsl-error"))))))
 
+(defn shader-state-vec [shader-type fname]
+  (conj
+    (condp = shader-type
+       gl.FRAGMENT_SHADER gstate/frag-path
+       gl.VERTEX_SHADER   gstate/vert-path)
+     fname))
+
+(.deleteShader gl null)
+
 ;; probably need to delete old shader for a file on recompile
+;; or maybe I should call shaderSource and recompile instead?
 (defn compile-shader-type [fname source shader-type]
-  (let [shader (.createShader gl shader-type)
+  (let [shader         (.createShader gl shader-type)
+        shader-vec     (shader-state-vec shader-type fname)
         error-state-fn (gstate/swap-state-fn gstate/error-path)]
     (.shaderSource gl shader source)
     (.compileShader gl shader)
     (if (.getShaderParameter gl shader gl.COMPILE_STATUS)
+      ;; successfully compiled shader
       (do
-        ((gstate/swap-state-fn
-          (condp = shader-type
-            gl.FRAGMENT_SHADER gstate/frag-path
-            gl.VERTEX_SHADER   gstate/vert-path))
-           assoc fname shader)
+        (.deleteShader gl (gstate/get-state shader-vec))
+        ((gstate/swap-state-fn shader-vec) reset! shader)
         (error-state-fn assoc fname [])
         (notifos/set-msg! "Successfully compiled shader"))
 

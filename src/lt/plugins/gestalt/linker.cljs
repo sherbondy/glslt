@@ -26,9 +26,9 @@
       (dom/h1 nil (or (get data :text)
                       "No value for text"))
       (dom/h1 nil "Pick a Vertex Shader:")
-      (om/build shader-list (get data :vertex-shaders))
+      (om/build shader-list (get @data :vertex-shaders))
       (dom/h1 nil "Pick a Fragment Shader:")
-      (om/build shader-list (get data :fragment-shaders))))))
+      (om/build shader-list (get @data :fragment-shaders))))))
 
 (defn shader-elem [[fname _] owner]
   (reify

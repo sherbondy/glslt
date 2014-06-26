@@ -11,6 +11,5 @@ varying vec2 uv;
 
 void main(void) {
  gl_Position = _mvProj * vec4(vertex, 1.0);
- vec2 bla = vec2(1,2);
  uv = uv1;
 }
