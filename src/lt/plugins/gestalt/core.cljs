@@ -9,7 +9,8 @@
             [lt.objs.command :as cmd]
             [lt.objs.files :as files]
             [clojure.string :as str]
-            [lt.util.js :as util]))
+            [lt.util.js :as util])
+  (:require-macros [lt.macros :refer [behavior]]))
 
 ;; a lot of this is copied from / based on the haskell plugin
 
@@ -104,7 +105,9 @@
 ;; (files/path->type (gutil/current-file-name))
 ;; (files/basename (current-file-name))
 
-(cmd/command {:command :compile-shader
+;; triger recompile on edit...
+
+(cmd/command {:command :gestalt.compile-shader
               :desc "GLSL: Compile shader"
               :exec compile-shader-buffer})
 
