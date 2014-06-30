@@ -1,5 +1,7 @@
 ;; handle the UI for creating programs:
 ;; links together a vertex shader and a fragment shader
+;; linker should show the expected inputs and outputs (uniforms + attributes) => (uniforms + varyings)
+;; for each shader and only allow valid mappings of shaders...
 
 (ns lt.plugins.gestalt.linker
   (:require [lt.plugins.gestalt.state :as gstate]
@@ -10,7 +12,7 @@
             [lt.objs.notifos :as notifos]
             [lt.util.js :as util]
             [om.core :as om :include-macros true]
-            [om.dom :as dom :include-macros true])
+            [om-tools.dom :as dom :include-macros true])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
 ;; maybe everything that has a dom function in it
@@ -22,25 +24,24 @@
     om/IRender
     (render [this]
      (dom/div
-      nil
-      (dom/h1 nil (or (get data :text)
+      (dom/h1 (or (get data :text)
                       "No value for text"))
-      (dom/h1 nil "Pick a Vertex Shader:")
+      (dom/h1 "Pick a Vertex Shader:")
       (om/build shader-list (get @data :vertex-shaders))
-      (dom/h1 nil "Pick a Fragment Shader:")
+      (dom/h1 "Pick a Fragment Shader:")
       (om/build shader-list (get @data :fragment-shaders))))))
 
 (defn shader-elem [[fname _] owner]
   (reify
     om/IRender
     (render [_]
-      (dom/li nil fname))))
+      (dom/li fname))))
 
 (defn shader-list [shaders owner]
   (reify
     om/IRender
     (render [this]
-      (apply dom/ul nil
+      (dom/ul
         (om/build-all shader-elem shaders)))))
 
 (defui glsl-linker [this]

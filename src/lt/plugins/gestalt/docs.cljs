@@ -6,13 +6,12 @@
             [lt.plugins.doc :as doc]
             [cljs.reader :as reader]
             [lt.plugins.gestalt.util :as gu]
-            [lt.plugins.gestalt.state :as state])
+            [lt.plugins.gestalt.state :as gstate])
   (:require-macros [lt.macros :refer [behavior]]))
 
 (defn update-docs! [res]
   (when (:content res)
-    ((state/swap-state-fn state/docs-path)
-     reset!
+    ((gstate/swap-state-fn! gstate/docs-path)
      (reader/read-string (:content res)))))
 
 (defn grab-docs! []

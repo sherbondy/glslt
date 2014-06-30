@@ -14,8 +14,6 @@ varying vec3 n;
 void main(void) {
 	// compute position
 	gl_Position = _mvProj * vec4(vertex, 1.0);
-
-	uv = uv1;
 	// compute light info
 	n = normalize(_norm * normal);
 }

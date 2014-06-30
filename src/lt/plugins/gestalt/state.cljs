@@ -2,6 +2,12 @@
 ;; one big happy family
 (ns lt.plugins.gestalt.state)
 
+;; a shader's value should be expanded to cover:
+;; {:shader the-shader-obj
+;;  :uniforms []
+;;  :attributes []
+;;  :varying [{:name :gl_Position, :type :vec4}]} or {:name :gl_FragColor}
+
 (def global-state
   (atom
    {:docs {}
@@ -23,7 +29,7 @@
 (defn get-state [state-vec]
   (get-in @global-state state-vec))
 
-(defn swap-state-fn [state-vec]
-  (partial
-   swap! global-state
-   update-in state-vec))
+(defn swap-state-fn! [state-vec]
+  (fn [v]
+   (swap! global-state
+          assoc-in state-vec v)))

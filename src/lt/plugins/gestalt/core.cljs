@@ -14,6 +14,8 @@
 
 ;; a lot of this is copied from / based on the haskell plugin
 
+;; should fork a subprocess with glsl-tokenizer / glsl-parser
+
 ;; hello global objects floating around
 (def canvas (.createElement js/document "CANVAS"))
 (def gl (.getContext canvas "webgl"))
@@ -54,24 +56,25 @@
        gl.VERTEX_SHADER   gstate/vert-path)
      fname))
 
-(.deleteShader gl null)
-
 ;; probably need to delete old shader for a file on recompile
 ;; or maybe I should call shaderSource and recompile instead?
 (defn compile-shader-type [fname source shader-type]
-  (let [shader         (.createShader gl shader-type)
-        shader-vec     (shader-state-vec shader-type fname)
-        error-state-fn (gstate/swap-state-fn gstate/error-path)]
+  (let [shader          (.createShader gl shader-type)
+        shader-vec      (shader-state-vec shader-type fname)
+        error-state-fn! (gstate/swap-state-fn!
+                          (conj gstate/error-path fname))
+        old-shader      (gstate/get-state shader-vec)]
     (.shaderSource gl shader source)
     (.compileShader gl shader)
     (if (.getShaderParameter gl shader gl.COMPILE_STATUS)
       ;; successfully compiled shader
       (do
-        (.deleteShader gl (gstate/get-state shader-vec))
-        ((gstate/swap-state-fn shader-vec) reset! shader)
-        (error-state-fn assoc fname [])
+        (when old-shader
+          (.deleteShader gl old-shader))
+        ;; what happens if the key is not in the map already?
+        ((gstate/swap-state-fn! shader-vec) shader)
+        (error-state-fn! [])
         (notifos/set-msg! "Successfully compiled shader"))
-
       ;; handle adding new inline errors
       (let [errors (gl-errors->edn (.getShaderInfoLog gl shader))]
         (doseq [error errors]
@@ -80,7 +83,7 @@
                             (:operator error) ": "
                             (:message error))
                        "error"))
-        (error-state-fn assoc fname errors)
+        (error-state-fn! errors)
         (notifos/set-msg! "Ran into some errors"
                           {:class "error"})))))
 
