@@ -2,6 +2,7 @@
   (:require [lt.plugins.gestalt.linker :as glinker]
             [lt.plugins.gestalt.util :as gutil]
             [lt.plugins.gestalt.state :as gstate]
+            [lt.object :as object]
             [lt.objs.console :as console]
             [lt.objs.editor :as ed]
             [lt.objs.editor.pool :as pool]
@@ -42,12 +43,16 @@
              (let [error-path [:errors (gutil/current-file-name)]
                    old-errors (get-in o error-path)
                    new-errors (get-in n error-path)
-                   editor     (current-editor)]
+                   editor     (pool/last-active)]
                (when (not= old-errors new-errors)
-                 (doseq [error old-errors]
-                   (ed/-line-class editor (:line error) "wrap" "glsl-error"))
+                 (doseq [[_ w] (:widgets @editor)]
+                   (object/raise w :clear!))
                  (doseq [error new-errors]
-                   (ed/+line-class editor (:line error) "wrap" "glsl-error"))))))
+                   (object/raise editor :editor.exception
+                                (str (:operator error) ": " (:message error))
+                                {:line (:line error)
+                                 :ch 0
+                                 :start-line (:line error)}))))))
 
 (defn shader-state-vec [shader-type fname]
   (conj
@@ -63,7 +68,8 @@
         shader-vec      (shader-state-vec shader-type fname)
         error-state-fn! (gstate/swap-state-fn!
                           (conj gstate/error-path fname))
-        old-shader      (gstate/get-state shader-vec)]
+        old-shader      (gstate/get-state shader-vec)
+        editor (pool/last-active)]
     (.shaderSource gl shader source)
     (.compileShader gl shader)
     (if (.getShaderParameter gl shader gl.COMPILE_STATUS)
@@ -77,15 +83,10 @@
         (notifos/set-msg! "Successfully compiled shader"))
       ;; handle adding new inline errors
       (let [errors (gl-errors->edn (.getShaderInfoLog gl shader))]
-        (doseq [error errors]
-          (console/log (str "Error on line "
-                            (inc (:line error)) ": "
-                            (:operator error) ": "
-                            (:message error))
-                       "error"))
         (error-state-fn! errors)
         (notifos/set-msg! "Ran into some errors"
                           {:class "error"})))))
+
 
 (def shader-mapping
   {"x-shader/x-fragment" gl.FRAGMENT_SHADER
@@ -99,8 +100,6 @@
      (:content file)
      (get shader-mapping (:type file)))))
 
-;; (compile-shader "/Users/ethanis/Code/glslt/samples/test1.vert")
-
 (defn compile-shader-buffer []
   "compile current buffer as shader"
   (let [fname (gutil/current-file-name)
@@ -112,12 +111,6 @@
        shader-type)
       (notifos/set-msg! "This file is not a valid shader"
                         {:class "error"}))))
-
-
-;; (files/path->type (gutil/current-file-name))
-;; (files/basename (current-file-name))
-
-;; triger recompile on edit...
 
 (cmd/command {:command :gestalt.compile-shader
               :desc "GLSL: Compile shader"

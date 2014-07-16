@@ -7,7 +7,8 @@
 
   :editor.glsl [:lt.plugins.gestalt.docs/manglsl-browser-doc
                 [:lt.object/add-tag :docable]
-                (:lt.objs.editor/on-change :gestalt.compile-shader)]
+                (:lt.objs.editor/on-change :gestalt.compile-shader)
+                :lt.plugins.gestalt.core/glsl-inline-errors]
 
   :files [(:lt.objs.files/file-types
            [{:name "Vertex Shader",
